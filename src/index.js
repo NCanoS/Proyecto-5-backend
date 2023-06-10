@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const cors = require('cors');
+
 
 dotenv.config();
 
@@ -15,9 +17,9 @@ const {
 const server = express();
 
 server.use(express.json());
+app.use(cors({origin: '*'}));
 
-
-mongoose.connect(`${process.env.MONGO_URI}`)
+mongoose.connect(`${process.env.MONGO_URI}${process.env.DB_USER}:${process.env.DB_PASSWORD}${process.env.HOST_DB}`)
     .then(()=>console.log("Connected to database"))
     .catch((e)=>console.log("error: "+ e));
 
