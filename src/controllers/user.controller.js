@@ -2,8 +2,7 @@ const {userModel} = require('../models/user.model.js');
 const bcrypt = require('bcrypt');
 const {generateJWT} = require('../utils/jwt.js');
 
-//create CRUD functions for user with express to connect to mongodb
-
+//get users
 const getUserById = async(req, res)=>{
     try {
         const user = await userModel.findById(req.params.id);
