@@ -14,6 +14,12 @@ const {
     loginUser
 } = require('./controllers/user.controller.js');
 
+//product controllers
+const {
+    getProductById,
+    getProducts   
+} = require('./controllers/product.controller.js');
+
 
 //initialize express
 
@@ -35,7 +41,7 @@ server.listen(process.env.PORT,()=>{
 });
 
 
-//routes
+//user routes
 server.get('/users/:id', getUserById)
 
 server.post('/register', registerUser)
@@ -43,3 +49,8 @@ server.post('/register', registerUser)
 server.put('/user/settings/:id', updateUser)
 
 server.post('/login', loginUser)
+
+//product routes
+server.get('/products/:id', getProductById)
+
+server.get('/', getProducts)
