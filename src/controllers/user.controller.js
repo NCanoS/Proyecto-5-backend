@@ -44,8 +44,8 @@ const getUserByEmail = async(req, res)=>{
 const registerUser = async(req, res)=>{
     try {
         const user = new userModel({
-            firstname: req.body.firstname,
-            lastname: req.body.lastname,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
             age: req.body.age,
             gender: req.body.gender,
             country: req.body.country,
@@ -73,8 +73,8 @@ const updateUser = async(req, res)=>{
         await userModel.findByIdAndUpdate(
             req.params.id,
             {
-                firstname: req.body.firstname,
-                lastname: req.body.lastname,
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
                 age: req.body.age,
                 gender: req.body.gender,
                 country: req.body.country,
@@ -98,20 +98,30 @@ const updateUser = async(req, res)=>{
 
 //create login function
 const loginUser = async(req, res)=>{
-    const { email, password } = req.body;
 
     try {
        const user = await userModel.findOne({
-        email: email,
+        email: req.body.email,
+        password: req.body.password
        })
        if(!user) return res.json({
         message: 'Usuario no encontrado',
         isAuth: false
-       }).send()
+       })
+       return res.json({
+        message: 'Acceso correcto',
+        isAuth: true
+       })
+       
+    }
+    catch (error) {
+        return res.json({
+            error: error
+        })
+    }
+       /* const isMatch = bcrypt.compareSync(password, user.password);
 
-        const isMatch = bcrypt.compareSync(password, user.password);
-
-        if (isMatch) {
+        if (password === user.password) {
             const token = generateJWT(user._id);
     
             return res
@@ -136,14 +146,13 @@ const loginUser = async(req, res)=>{
         return res.json({
             error: error
         })
-    }
+    }*/
 }
 
 
 module.exports ={
     getUserById,
     getUserByEmail,
-    registerUser,
     registerUser,
     updateUser,
     loginUser
