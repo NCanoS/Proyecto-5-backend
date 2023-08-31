@@ -3,23 +3,29 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
-
-
 dotenv.config();
 
-//controllers
+//user controllers
 const {
-    saveUser,
+    getUserById,
+    getUserByEmail,
+    registerUser,
     updateUser,
-    deleteUser,
     loginUser
-} = require('./controllers/user.controller.js')
+} = require('./controllers/user.controller.js');
+
+
+//initialize express
 
 const server = express();
-
 server.use(express.json());
+
+//middlewares
+
+server.use(cors());
 server.use(cors({origin: '*'}));
 
+//connect to mongoose
 mongoose.connect(`${process.env.MONGO_URI}${process.env.DB_USER}:${process.env.DB_PASSWORD}${process.env.HOST_DB}`)
     .then(()=>console.log("Connected to database"))
     .catch((e)=>console.log("error: "+ e));
@@ -28,10 +34,12 @@ server.listen(process.env.PORT,()=>{
     return console.log("server running")
 });
 
-server.post('/register', saveUser)
+
+//routes
+server.get('/users/:id', getUserById)
+
+server.post('/register', registerUser)
 
 server.put('/user/settings/:id', updateUser)
-
-server.delete('/users/settings/:id', deleteUser)
 
 server.post('/login', loginUser)

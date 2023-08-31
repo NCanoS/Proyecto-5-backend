@@ -2,16 +2,16 @@ const {userModel} = require('../models/user.model.js');
 const bcrypt = require('bcrypt');
 const {generateJWT} = require('../utils/jwt.js');
 
-const saveUser = async(req, res)=>{
+//create CRUD functions for user with express to connect to mongodb
+
+const getUserById = async(req, res)=>{
     try {
-        const user = new userModel({
-            email : req.body.email,
-            password: req.body.password
-        })
-        await user.save()
-        .status(201)
+        const user = await userModel.findById(req.params.id);
+        return res
+        .status(200)
         .json({
-            message: 'Usuario creado con éxito'
+            message: 'Usuario encontrado',
+            user: user
         })
         .send()
     } catch (error) {
@@ -20,20 +20,73 @@ const saveUser = async(req, res)=>{
         })
     }
 }
+
+const getUserByEmail = async(req, res)=>{
+    try {
+        const user = await userModel.findOne({
+            email: req.params.email
+        })
+        return res
+        .status(200)
+        .json({
+            message: 'Usuario encontrado',
+            user: user
+        })
+        .send()
+    } catch (error) {
+        return res.json({
+            error: error
+        })
+    }
+}
+
+//generate Create functions
+
+const registerUser = async(req, res)=>{
+    try {
+        const user = new userModel({
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            age: req.body.age,
+            gender: req.body.gender,
+            country: req.body.country,
+            city: req.body.city,
+            email: req.body.email,
+            password: req.body.password,
+        })
+        await user.save()
+        .status(201)
+        .json({
+            message: 'Usuario Registrado'
+        })
+        .send()
+    } catch (error) {
+        return res.json({
+            error: error
+        })
+    }
+}
+
+//generate Update functions
 
 const updateUser = async(req, res)=>{
     try {
         await userModel.findByIdAndUpdate(
             req.params.id,
             {
-                email : req.body.email,
+                firstname: req.body.firstname,
+                lastname: req.body.lastname,
+                age: req.body.age,
+                gender: req.body.gender,
+                country: req.body.country,
+                city: req.body.city,
                 password: req.body.password
             }
         )
         return res
         .status(200)
         .json({
-            message: 'Usuario actualizado con éxito'
+            message: 'Información actualizada correctamente'
         })
         .send()
     } catch (error) {
@@ -43,22 +96,8 @@ const updateUser = async(req, res)=>{
     }
 }
 
-const deleteUser = async(req, res)=>{
-    try {
-        await userModel.findByIdAndDelete(req.params.id)
-        return res
-        .status(200)
-        .json({
-            message: 'Usuario eliminado correctamente'
-        })
-        .send()
-    } catch (error) {
-        return res.json({
-            error: error
-        })
-    }
-}
 
+//create login function
 const loginUser = async(req, res)=>{
     const { email, password } = req.body;
 
@@ -100,9 +139,13 @@ const loginUser = async(req, res)=>{
         })
     }
 }
+
+
 module.exports ={
-    saveUser,
+    getUserById,
+    getUserByEmail,
+    registerUser,
+    registerUser,
     updateUser,
-    deleteUser,
     loginUser
 }
