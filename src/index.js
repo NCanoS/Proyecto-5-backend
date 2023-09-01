@@ -26,7 +26,7 @@ const {
 server.use(express.json());
 
 //middlewares
-server.use(cors({origin: '*'}));
+server.use(cors());
 
 //connect to mongoose
 
@@ -51,4 +51,4 @@ server.post('/api/login', loginUser)
 //product routes
 server.get('/products/:id', getProductById)
 
-server.get('/', getProducts)
+server.get('/products', getProducts)
